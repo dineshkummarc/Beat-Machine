@@ -110,11 +110,7 @@
     <Resource Include="Resources\social.png" />
     <Resource Include="Resources\play.png" />
     <Resource Include="Resources\minus.png" />
-    <Resource Include="Resources\next.png" />
-    <Resource Include="Resources\pause.png" />
-    <Resource Include="Resources\playSmall.png" />
     <Resource Include="Resources\plus.png" />
-    <Resource Include="Resources\previous.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
