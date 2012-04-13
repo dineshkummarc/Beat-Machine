@@ -9,11 +9,15 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace BeatMachine.EchoNest.Model
 {
     public class Catalog
     {
+        /// <summary>
+        /// Used in catalog list and catalog update methods
+        /// </summary>
         [JsonProperty(PropertyName = "id")]
         public string Id
         {
@@ -41,5 +45,47 @@ namespace BeatMachine.EchoNest.Model
             get;
             set;
         }
+
+
+        /// <summary>
+        /// Used only in catalog read method
+        /// </summary>
+        [JsonProperty(PropertyName = "start")]
+        public int Start
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Used only in catalog read method
+        /// </summary>
+        [JsonProperty(PropertyName = "items")]
+        public List<Song> Items
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Used only in catalog update method
+        /// </summary>
+        public List<CatalogAction<Song>> SongActions
+        {
+            get;
+            set;
+        }
+
+        // TODO Add support for artist catalogs
+
+        /// <summary>
+        /// Used only in catalog update method
+        /// </summary>
+        // public List<CatalogAction<Artist>> ArtistActions
+        // {
+        //     get;
+        //     set;
+        // }
+
     }
 }

@@ -27,15 +27,20 @@ namespace PhoneApp1.Tests
         {
             EchoNestApi api = ((App)App.Current).Api;
             api.CatalogUpdateCompleted += new EventHandler<EchoNestApiEventArgs>(api_CatalogUpdateCompleted);
-            api.CatalogUpdateSongAsync(catalogId.Text, new List<CatalogAction<Song>> {
-                new CatalogAction<Song>{
-                    Item = new Song{
-                        ItemId = catalogId.Text + title.Text,
-                        SongName = title.Text,
-                        ArtistName = artist.Text
+            Catalog cat = new Catalog
+            {
+                Id = catalogId.Text,
+                SongActions = new List<CatalogAction<Song>> {
+                    new CatalogAction<Song>{
+                        Item = new Song{
+                            ItemId = catalogId.Text + title.Text,
+                            SongName = title.Text,
+                            ArtistName = artist.Text
+                        }
                     }
                 }
-            }, null);
+            };
+            api.CatalogUpdateAsync(cat, null);
         }
 
         void api_CatalogUpdateCompleted(object sender, EchoNestApiEventArgs e)

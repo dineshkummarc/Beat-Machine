@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using BeatMachine.EchoNest;
 
 namespace PhoneApp1
 {
@@ -22,6 +23,12 @@ namespace PhoneApp1
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
         public PhoneApplicationFrame RootFrame { get; private set; }
+
+        public EchoNestApi Api
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Constructor for the Application object.
@@ -57,6 +64,21 @@ namespace PhoneApp1
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
+            Api = new EchoNestApi("R2O4VVBVN5EFMCJRP");
+
+        }
+
+        public static string HandleError(Exception e)
+        {
+            if (e is EchoNestApiException)
+            {
+                EchoNestApiException ex = e as EchoNestApiException;
+                return ex.Code + " " + ex.Message;
+            }
+            else
+            {
+                return e.Message;
+            }
         }
 
         // Code to execute when the application is launching (eg, from Start)

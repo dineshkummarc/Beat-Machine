@@ -17,126 +17,46 @@ namespace PhoneApp1
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        private EchoNestApi api;
 
         // Constructor
         public MainPage()
         {
             InitializeComponent();
-
-            api = new EchoNestApi("R2O4VVBVN5EFMCJRP");
         }
 
+        
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            api.SongSearchCompleted += new EventHandler<EchoNestApiEventArgs>(api_SearchSongCompleted);
-            api.SongSearchAsync(new Dictionary<string, string>
-                {
-                    { "title", "karma police" },
-                    { "artist", "radiohead" }
-                });
-
+            NavigationService.Navigate(new Uri("/Tests/SongSearch.xaml", UriKind.Relative));
         }
 
-        void api_CatalogListCompleted(object sender, EchoNestApiEventArgs e)
-        {
-            if (e.Error != null)
-            {
-                HandleError(e.Error);
-            }
-            else
-            {
-                result.Text = ((List<Catalog>)e.GetResultData())
-                    .Select<Catalog, string>((cat) => cat.Id)
-                    .Aggregate<string>((sofar, current) =>
-                        sofar + " " + current);
-            }
-        }
-
-        void api_SearchSongCompleted(object sender, EchoNestApiEventArgs e)
-        {
-            if (e.Error != null)
-            {
-                HandleError(e.Error);
-            }
-            else
-            {
-                result.Text = ((List<Song>)e.GetResultData())
-                    .Select<Song, string>((so) => so.Title)
-                    .Aggregate<string>((sofar, current) =>
-                        sofar + " " + current);
-            }
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            api.CatalogCreateCompleted += new EventHandler<EchoNestApiEventArgs>(api_CatalogCreateCompleted);
-            api.CatalogCreateAsync("foo2", "song", null);
-        }
-
-        void api_CatalogCreateCompleted(object sender, EchoNestApiEventArgs e)
-        {
-            if (e.Error != null)
-            {
-                HandleError(e.Error);
-            }
-            else
-            {
-                result.Text = ((Catalog)e.GetResultData()).Id;
-            }
-        }
-
-        private void HandleError(Exception e)
-        {
-            if (e is EchoNestApiException)
-            {
-                EchoNestApiException ex = e as EchoNestApiException;
-                result.Text = ex.Code + " " + ex.Message;
-            }
-            else
-            {
-                result.Text = e.Message;
-            }
-        }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            api.CatalogListCompleted += new EventHandler<EchoNestApiEventArgs>(api_CatalogListCompleted);
-            api.CatalogListAsync(null);
-
+            NavigationService.Navigate(new Uri("/Tests/CatalogList.xaml", UriKind.Relative));
         }
+
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/Tests/CatalogCreate.xaml", UriKind.Relative));
+        }
+
+
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            api.CatalogUpdateCompleted += new EventHandler<EchoNestApiEventArgs>(api_CatalogUpdateCompleted);
-            api.CatalogUpdateSongAsync("CAACONL1366197A7EC", new List<CatalogAction<Song>> {
-                new CatalogAction<Song>{
-                    Item = new Song{
-                        ItemId = "foo127",
-                        SongName = "holiday",
-                        ArtistName = "madonna"
-                    }
-                },
-                new CatalogAction<Song>{
-                    Item = new Song{
-                        ItemId = "foo128",
-                        SongName = "candy",
-                        ArtistName = "madonna"
-                    }
-                }
-            }, null);
+            NavigationService.Navigate(new Uri("/Tests/CatalogUpdate.xaml", UriKind.Relative));
         }
 
-        void api_CatalogUpdateCompleted(object sender, EchoNestApiEventArgs e)
+        private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-            if (e.Error != null)
-            {
-                HandleError(e.Error);
-            }
-            else
-            {
-                result.Text = e.GetResultData() as string;
-            }
+            NavigationService.Navigate(new Uri("/Tests/CatalogStatus.xaml", UriKind.Relative));
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/Tests/CatalogRead.xaml", UriKind.Relative));
         }
 
     }

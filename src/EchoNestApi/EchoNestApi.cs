@@ -27,6 +27,8 @@ namespace BeatMachine.EchoNest
         public event EventHandler<EchoNestApiEventArgs> CatalogCreateCompleted;
         public event EventHandler<EchoNestApiEventArgs> CatalogListCompleted;
         public event EventHandler<EchoNestApiEventArgs> CatalogUpdateCompleted;
+        public event EventHandler<EchoNestApiEventArgs> CatalogStatusCompleted;
+        public event EventHandler<EchoNestApiEventArgs> CatalogReadCompleted;
 
         // For multipart POST requests
         private const string MultipartPrefix = "--";
@@ -39,6 +41,8 @@ namespace BeatMachine.EchoNest
             public const string CatalogCreate = "/catalog/create";
             public const string CatalogList = "/catalog/list";
             public const string CatalogUpdate = "/catalog/update";
+            public const string CatalogStatus = "/catalog/status";
+            public const string CatalogRead = "/catalog/read";
         }
 
         public string ApiKey
@@ -76,6 +80,9 @@ namespace BeatMachine.EchoNest
             InitializeParameters(ref parameters);
             parameters["name"] = name;
             parameters["type"] = type;
+
+            // TODO Add support for artist catalogs
+
             SendHttpRequest(EchoNestPaths.CatalogCreate, parameters, null);
         }
 
@@ -90,19 +97,57 @@ namespace BeatMachine.EchoNest
         }
 
         /// <summary>
-        /// 
+        /// Updates a catalog as documented here
+        /// http://developer.echonest.com/docs/v4/catalog.html#update
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="actions"></param>
-        public void CatalogUpdateSongAsync(string id, 
-            List<CatalogAction<Song>> actions, 
+        /// <param name="cat">Catalog to update, which should have at least the
+        /// Id set, as well as either the SongActions or ArtistActions 
+        /// properties. An update can either include songs or artists, but not 
+        /// both, so one of these two has to be either null or contain 0 
+        /// members.</param>
+        /// <param name="parameters">See link for list of parameters</param>
+        public void CatalogUpdateAsync(Catalog cat, 
             Dictionary<string, string> parameters)
         {
             InitializeParameters(ref parameters);
-            parameters["id"] = id;
+            parameters["id"] = cat.Id;
             parameters["data_type"] = "json";
-            SendHttpRequest(EchoNestPaths.CatalogUpdate, parameters, actions);
+
+            // TODO Add support for artist catalogs
+            SendHttpRequest(EchoNestPaths.CatalogUpdate, parameters, 
+                cat.SongActions);
         }
+
+        /// <summary>
+        /// Gets the status of a catalog update as described here
+        /// http://developer.echonest.com/docs/v4/catalog.html#status
+        /// </summary>
+        /// <param name="ticket">The ticket obtained from calling the 
+        /// CatalogUpdate method</param>
+        /// <param name="parameters">See link for list of parameters</param>
+        public void CatalogStatusAsync(string ticket,
+            Dictionary<string, string> parameters)
+        {
+            InitializeParameters(ref parameters);
+            parameters["ticket"] = ticket;
+            SendHttpRequest(EchoNestPaths.CatalogStatus, parameters, null);
+
+        }
+
+        /// <summary>
+        /// Reads the contents of a catalog as described here
+        /// http://developer.echonest.com/docs/v4/catalog.html#read
+        /// </summary>
+        /// <param name="catalogId">The catalog ID</param>
+        /// <param name="parameters">See link for list of parameters</param>
+        public void CatalogReadAsync(string catalogId,
+            Dictionary<string, string> parameters)
+        {
+            InitializeParameters(ref parameters);
+            parameters["id"] = catalogId;
+            SendHttpRequest(EchoNestPaths.CatalogRead, parameters, null);
+        }
+
 
         private void InitializeParameters(
             ref Dictionary<string, string> parameters)
@@ -137,6 +182,8 @@ namespace BeatMachine.EchoNest
             {
                 case EchoNestPaths.SongSearch:
                 case EchoNestPaths.CatalogList:
+                case EchoNestPaths.CatalogStatus:
+                case EchoNestPaths.CatalogRead:
                     break;
 
                 case EchoNestPaths.CatalogCreate:
@@ -455,6 +502,12 @@ namespace BeatMachine.EchoNest
                 case EchoNestPaths.CatalogUpdate:
                     args = HandleCatalogUpdateResponse(response);
                     break;
+                case EchoNestPaths.CatalogStatus:
+                    args = HandleCatalogStatusResponse(response);
+                    break;
+                case EchoNestPaths.CatalogRead:
+                    args = HandleCatalogReadResponse(response);
+                    break;
             }
 
             return args;
@@ -493,6 +546,24 @@ namespace BeatMachine.EchoNest
 
         }
 
+        private EchoNestApiEventArgs HandleCatalogStatusResponse(string response)
+        {
+            JToken jo = JObject.Parse(response)["response"];
+            Ticket result = JsonConvert.DeserializeObject<Ticket>(
+                jo.ToString());
+            return new EchoNestApiEventArgs(null, false, null, result);
+        }
+
+        private EchoNestApiEventArgs HandleCatalogReadResponse(string response)
+        {
+            JToken jo = JObject.Parse(response)["response"]["catalog"];
+            Catalog result = JsonConvert.DeserializeObject<Catalog>(
+                jo.ToString());
+            return new EchoNestApiEventArgs(null, false, null, result);
+
+
+        }
+
         /// <summary>
         /// Demux callbacks from SendHttpRequest method.
         /// </summary>
@@ -512,6 +583,12 @@ namespace BeatMachine.EchoNest
                     break;
                 case EchoNestPaths.CatalogUpdate:
                     e = CatalogUpdateCompleted;
+                    break;
+                case EchoNestPaths.CatalogStatus:
+                    e = CatalogStatusCompleted;
+                    break;
+                case EchoNestPaths.CatalogRead:
+                    e = CatalogReadCompleted;
                     break;
             }
 

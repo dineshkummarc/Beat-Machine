@@ -58,6 +58,7 @@
     <Compile Include="Model\CatalogAction.cs" />
     <Compile Include="Model\Catalog.cs" />
     <Compile Include="Model\Song.cs" />
+    <Compile Include="Model\Ticket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

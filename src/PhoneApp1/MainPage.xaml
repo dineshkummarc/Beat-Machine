@@ -23,26 +23,30 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
             <TextBlock x:Name="ApplicationTitle" Text="MY APPLICATION" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock x:Name="PageTitle" Text="page name" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock x:Name="PageTitle" Text="test harness" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Button Grid.Row="0" Grid.Column="0" Click="Button_Click" Content="SongSearch" />
-            <Button Grid.Row="1" Grid.Column="0" Click="Button_Click_1" Content="CatalogCreate" />
-            <Button Grid.Row="2" Grid.Column="0" Click="Button_Click_2" Content="CatalogList" />
-            <Button Grid.Row="3" Grid.Column="0" Click="Button_Click_3" Content="CatalogUpdate" />
-            <TextBlock Grid.Row="4" Grid.Column="0" x:Name="result" TextWrapping="Wrap" />
-        </Grid>
+        <ScrollViewer Grid.Row="1" Margin="12,0,12,0">
+            <!--ContentPanel - place additional content here-->
+            <Grid x:Name="ContentPanel" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80" />
+                    <RowDefinition Height="80" />
+                    <RowDefinition Height="80" />
+                    <RowDefinition Height="80" />
+                    <RowDefinition Height="80" />
+                    <RowDefinition Height="80" />
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" Click="Button_Click" Content="song search" />
+                <Button Grid.Row="1" Grid.Column="0" Click="Button_Click_2" Content="catalog list" />
+                <Button Grid.Row="2" Grid.Column="0" Click="Button_Click_1" Content="catalog create" />
+                <Button Grid.Row="3" Grid.Column="0" Click="Button_Click_3" Content="catalog update" />
+                <Button Grid.Row="4" Grid.Column="0" Click="Button_Click_4" Content="catalog status" />
+                <Button Grid.Row="5" Grid.Column="0" Click="Button_Click_5" Content="catalog read" />
+            </Grid>
+        </ScrollViewer>
     </Grid>
- 
+
     <!--Sample code showing usage of ApplicationBar-->
     <!--<phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">

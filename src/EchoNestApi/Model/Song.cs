@@ -14,8 +14,122 @@ namespace BeatMachine.EchoNest.Model
 {
     public class Song
     {
+        public class Summary
+        {
+            public enum Scale
+            {
+                C = 0,
+                CSharp = 1,
+                D = 2,
+                DSharp = 3,
+                E = 4,
+                F = 5,
+                FSharp = 6,
+                G = 7,
+                GSharp = 8,
+                A = 9,
+                ASharp = 10,
+                B = 11,
+                CPrime = 12
+            }
+
+            public enum AudioMode
+            {
+                Major = 0,
+                Minor = 1
+            }
+
+            [JsonProperty(PropertyName = "key")]
+            public Scale Key
+            {
+                get;
+                set;
+            }
+
+            [JsonProperty(PropertyName = "tempo")]
+            public float Tempo
+            {
+                get;
+                set;
+            }
+
+            [JsonProperty(PropertyName = "analysis_url")]
+            public Uri AnalysisUrl
+            {
+                get;
+                set;
+            }
+
+            [JsonProperty(PropertyName = "audio_md5")]
+            public string AudioMd5
+            {
+                get;
+                set;
+            }
+
+            /// <summary>
+            /// Range is from 0 to 1
+            /// </summary>
+            [JsonProperty(PropertyName = "danceability")]
+            public float Danceability
+            {
+                get;
+                set;
+            }
+
+            /// <summary>
+            /// In seconds
+            /// </summary>
+            [JsonProperty(PropertyName = "duration")]
+            public float Duration
+            {
+                get;
+                set;
+            }
+
+            /// <summary>
+            /// Range is from 0 to 1
+            /// </summary>
+            [JsonProperty(PropertyName = "energy")]
+            public float Energy
+            {
+                get;
+                set;
+            }
+
+
+            /// <summary>
+            /// Measured in dB
+            /// </summary>
+            [JsonProperty(PropertyName = "loudness")]
+            public float Loudness
+            {
+                get;
+                set;
+            }
+
+
+            [JsonProperty(PropertyName = "mode")]
+            public AudioMode Mode
+            {
+                get;
+                set;
+            }
+
+            /// <summary>
+            /// Beats per measure
+            /// </summary>
+            [JsonProperty(PropertyName = "time_signature")]
+            public int TimeSignature
+            {
+                get;
+                set;
+            }
+        }
+
+
         /// <summary>
-        /// Use in search or catalog methods
+        /// Use in search or catalog update methods
         /// </summary>
         [JsonProperty(PropertyName = "artist_id")]
         public string ArtistId
@@ -25,7 +139,7 @@ namespace BeatMachine.EchoNest.Model
         }
 
         /// <summary>
-        /// Use in search method
+        /// Use in search and catalog read methods
         /// </summary>
         [JsonProperty(PropertyName = "id")]
         public string Id
@@ -35,7 +149,7 @@ namespace BeatMachine.EchoNest.Model
         }
 
         /// <summary>
-        /// Use in catalog method
+        /// Use in catalog update method
         /// </summary>
         [JsonProperty(PropertyName = "item_id")]
         public string ItemId
@@ -45,7 +159,7 @@ namespace BeatMachine.EchoNest.Model
         }
 
         /// <summary>
-        /// Use in search or catalog methods
+        /// Use in search or catalog update method
         /// </summary>
         [JsonProperty(PropertyName = "artist_name")]
         public string ArtistName
@@ -65,10 +179,27 @@ namespace BeatMachine.EchoNest.Model
         }
 
         /// <summary>
-        /// Use in catalog method
+        /// Use in catalog update method
         /// </summary>
         [JsonProperty(PropertyName = "song_name")]
         public string SongName
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Use in catalog read method
+        /// </summary>
+        [JsonProperty(PropertyName = "song_id")]
+        public string SongId
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "audio_summary")]
+        public Summary AudioSummary
         {
             get;
             set;

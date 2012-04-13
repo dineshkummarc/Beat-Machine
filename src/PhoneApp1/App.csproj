@@ -64,6 +64,24 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\CatalogCreate.xaml.cs">
+      <DependentUpon>CatalogCreate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\CatalogList.xaml.cs">
+      <DependentUpon>CatalogList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\CatalogRead.xaml.cs">
+      <DependentUpon>CatalogRead.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\CatalogStatus.xaml.cs">
+      <DependentUpon>CatalogStatus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\CatalogUpdate.xaml.cs">
+      <DependentUpon>CatalogUpdate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\SongSearch.xaml.cs">
+      <DependentUpon>SongSearch.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -71,6 +89,30 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tests\CatalogCreate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tests\CatalogList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tests\CatalogRead.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tests\CatalogStatus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tests\CatalogUpdate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tests\SongSearch.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

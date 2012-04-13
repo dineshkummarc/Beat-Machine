@@ -41,7 +41,7 @@
                     <TextBox Name="title" Text="thriller" Width="220" />
                 </StackPanel>
                 <Button Grid.Row="2" Grid.Column="0" Click="Button_Click" Content="CatalogUpdate" />
-                <TextBlock Grid.Row="3" Grid.Column="0" x:Name="result" TextWrapping="Wrap" />
+                <TextBox Grid.Row="3" Grid.Column="0" x:Name="result" TextWrapping="Wrap" />
             </Grid>
         </ScrollViewer>
     </Grid>

@@ -35,7 +35,7 @@
                 </Grid.RowDefinitions>
 
                 <Button Grid.Row="0" Grid.Column="0" Click="Button_Click" Content="CatalogList" />
-                <TextBlock Grid.Row="1" Grid.Column="0" x:Name="result" TextWrapping="Wrap" />
+                <TextBox Grid.Row="1" Grid.Column="0" x:Name="result" TextWrapping="Wrap" />
             </Grid>
         </ScrollViewer>
     </Grid>
