@@ -198,8 +198,21 @@ namespace BeatMachine.EchoNest.Model
             set;
         }
 
+        /// <summary>
+        /// Use in catalog read method
+        /// </summary>
         [JsonProperty(PropertyName = "audio_summary")]
         public Summary AudioSummary
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Use in catalog read method
+        /// </summary>
+        [JsonProperty(PropertyName = "request")]
+        public Song Request
         {
             get;
             set;

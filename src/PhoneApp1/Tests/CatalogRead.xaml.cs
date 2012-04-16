@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using BeatMachine.EchoNest;
 using BeatMachine.EchoNest.Model;
+using System.Text;
 
 namespace PhoneApp1.Tests
 {
@@ -26,7 +27,10 @@ namespace PhoneApp1.Tests
         {
             EchoNestApi api = ((App)App.Current).Api;
             api.CatalogReadCompleted += new EventHandler<EchoNestApiEventArgs>(api_CatalogReadCompleted);
-            api.CatalogReadAsync(catalogId.Text, null);
+            api.CatalogReadAsync(catalogId.Text, new Dictionary<string, string>
+                {
+                    {"bucket", "audio_summary"}
+                });
         }
 
         void api_CatalogReadCompleted(object sender, EchoNestApiEventArgs e)
@@ -40,14 +44,31 @@ namespace PhoneApp1.Tests
 
                 Catalog cat = (Catalog)e.GetResultData();
                 result.Text = cat.Items
-                   .Select<Song, string>((so) => 
-                       String.Format("{0} by {1} at {2} BPM", 
-                       so.Title, 
-                       so.ArtistName, 
-                       so.AudioSummary.Tempo))
+                   .Select<Song, string>((so) => DisplaySong(so))
                    .Aggregate<string>((sofar, current) =>
                        sofar + Environment.NewLine + current);
             }
+        }
+
+        string DisplaySong(Song s)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("{0} by {1}", s.SongName ?? "?", s.ArtistName ?? "?");
+            sb.AppendLine();
+            if (s.AudioSummary != null)
+            {
+                sb.AppendFormat("BPM: {0} ", s.AudioSummary.Tempo);
+                sb.AppendFormat("Dan: {0} ", s.AudioSummary.Danceability);
+                sb.AppendFormat("Dur: {0} ", s.AudioSummary.Duration);
+                sb.AppendFormat("Ene: {0} ", s.AudioSummary.Energy);
+                sb.AppendFormat("Key: {0} ", s.AudioSummary.Key);
+                sb.AppendFormat("Lou: {0} ", s.AudioSummary.Loudness);
+                sb.AppendFormat("Mod: {0} ", s.AudioSummary.Mode);
+                sb.AppendFormat("Sig {0} ", s.AudioSummary.TimeSignature);
+                sb.AppendLine();
+            }
+            return sb.ToString();
+
         }
     }
 }
