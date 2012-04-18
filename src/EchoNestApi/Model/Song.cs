@@ -40,14 +40,14 @@ namespace BeatMachine.EchoNest.Model
             }
 
             [JsonProperty(PropertyName = "key")]
-            public Scale Key
+            public Scale? Key
             {
                 get;
                 set;
             }
 
             [JsonProperty(PropertyName = "tempo")]
-            public float Tempo
+            public float? Tempo
             {
                 get;
                 set;
@@ -71,7 +71,7 @@ namespace BeatMachine.EchoNest.Model
             /// Range is from 0 to 1
             /// </summary>
             [JsonProperty(PropertyName = "danceability")]
-            public float Danceability
+            public float? Danceability
             {
                 get;
                 set;
@@ -81,7 +81,7 @@ namespace BeatMachine.EchoNest.Model
             /// In seconds
             /// </summary>
             [JsonProperty(PropertyName = "duration")]
-            public float Duration
+            public float? Duration
             {
                 get;
                 set;
@@ -91,7 +91,7 @@ namespace BeatMachine.EchoNest.Model
             /// Range is from 0 to 1
             /// </summary>
             [JsonProperty(PropertyName = "energy")]
-            public float Energy
+            public float? Energy
             {
                 get;
                 set;
@@ -102,7 +102,7 @@ namespace BeatMachine.EchoNest.Model
             /// Measured in dB
             /// </summary>
             [JsonProperty(PropertyName = "loudness")]
-            public float Loudness
+            public float? Loudness
             {
                 get;
                 set;
@@ -110,7 +110,7 @@ namespace BeatMachine.EchoNest.Model
 
 
             [JsonProperty(PropertyName = "mode")]
-            public AudioMode Mode
+            public AudioMode? Mode
             {
                 get;
                 set;
@@ -120,7 +120,7 @@ namespace BeatMachine.EchoNest.Model
             /// Beats per measure
             /// </summary>
             [JsonProperty(PropertyName = "time_signature")]
-            public int TimeSignature
+            public int? TimeSignature
             {
                 get;
                 set;
