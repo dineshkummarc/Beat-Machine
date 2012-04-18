@@ -19,7 +19,6 @@ namespace PhoneApp1.Tests
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var catalogID = "CAJSYHH1369B16F57D";
             var api = ((App)App.Current).Api;
             api.CatalogUpdateCompleted += new EventHandler<EchoNestApiEventArgs>(api_CatalogUpdateCompleted);
 
@@ -42,7 +41,7 @@ namespace PhoneApp1.Tests
             }
 
             var catalog = new Catalog();
-            catalog.Id = catalogID;
+            catalog.Id = catalogId.Text;
             catalog.SongActions = songsActions;
 
             api.CatalogUpdateAsync(catalog, null);
