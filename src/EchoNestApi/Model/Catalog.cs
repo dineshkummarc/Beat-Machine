@@ -16,7 +16,7 @@ namespace BeatMachine.EchoNest.Model
     public class Catalog
     {
         /// <summary>
-        /// Used in catalog list and catalog update methods
+        /// Used in catalog list, update, and delte methods
         /// </summary>
         [JsonProperty(PropertyName = "id")]
         public string Id
@@ -25,6 +25,9 @@ namespace BeatMachine.EchoNest.Model
             set;
         }
 
+        /// <summary>
+        /// Useed in catalog delete method
+        /// </summary>
         [JsonProperty(PropertyName = "name")]
         public string Name
         {

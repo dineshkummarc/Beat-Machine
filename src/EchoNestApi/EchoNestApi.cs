@@ -29,6 +29,7 @@ namespace BeatMachine.EchoNest
         public event EventHandler<EchoNestApiEventArgs> CatalogUpdateCompleted;
         public event EventHandler<EchoNestApiEventArgs> CatalogStatusCompleted;
         public event EventHandler<EchoNestApiEventArgs> CatalogReadCompleted;
+        public event EventHandler<EchoNestApiEventArgs> CatalogDeleteCompleted;
 
         // For multipart POST requests
         private const string MultipartPrefix = "--";
@@ -43,6 +44,7 @@ namespace BeatMachine.EchoNest
             public const string CatalogUpdate = "/catalog/update";
             public const string CatalogStatus = "/catalog/status";
             public const string CatalogRead = "/catalog/read";
+            public const string CatalogDelete = "/catalog/delete";
         }
 
         public string ApiKey
@@ -94,6 +96,20 @@ namespace BeatMachine.EchoNest
         public void CatalogListAsync(Dictionary<string, string> parameters)
         {
             SendHttpRequest(EchoNestPaths.CatalogList, parameters, null);
+        }
+
+        /// <summary>
+        /// Delete a catalog as documented here
+        /// http://developer.echonest.com/docs/v4/catalog.html#delete
+        /// </summary>
+        /// <param name="id">The catalog ID</param>
+        /// <param name="parameters">See link for list of parameters</param>
+        public void CatalogDeleteAsync(string id, Dictionary<string, string>
+            parameters)
+        {
+            InitializeParameters(ref parameters);
+            parameters["id"] = id;
+            SendHttpRequest(EchoNestPaths.CatalogDelete, parameters, null);
         }
 
         /// <summary>
@@ -188,6 +204,7 @@ namespace BeatMachine.EchoNest
 
                 case EchoNestPaths.CatalogCreate:
                 case EchoNestPaths.CatalogUpdate:
+                case EchoNestPaths.CatalogDelete:
                     isGet = false;
                     break;
             }
@@ -508,6 +525,9 @@ namespace BeatMachine.EchoNest
                 case EchoNestPaths.CatalogRead:
                     args = HandleCatalogReadResponse(response);
                     break;
+                case EchoNestPaths.CatalogDelete:
+                    args = HandleCatalogDeleteResponse(response);
+                    break;
             }
 
             return args;
@@ -560,8 +580,14 @@ namespace BeatMachine.EchoNest
             Catalog result = JsonConvert.DeserializeObject<Catalog>(
                 jo.ToString());
             return new EchoNestApiEventArgs(null, false, null, result);
+        }
 
-
+        private EchoNestApiEventArgs HandleCatalogDeleteResponse(string response)
+        {
+            JToken jo = JObject.Parse(response)["response"];
+            Catalog result = JsonConvert.DeserializeObject<Catalog>(
+            jo.ToString());
+            return new EchoNestApiEventArgs(null, false, null, result);
         }
 
         /// <summary>
@@ -589,6 +615,9 @@ namespace BeatMachine.EchoNest
                     break;
                 case EchoNestPaths.CatalogRead:
                     e = CatalogReadCompleted;
+                    break;
+                case EchoNestPaths.CatalogDelete:
+                    e = CatalogDeleteCompleted;
                     break;
             }
 

@@ -68,6 +68,9 @@
     <Compile Include="Tests\CatalogCreate.xaml.cs">
       <DependentUpon>CatalogCreate.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tests\CatalogDelete.xaml.cs">
+      <DependentUpon>CatalogDelete.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tests\CatalogList.xaml.cs">
       <DependentUpon>CatalogList.xaml</DependentUpon>
     </Compile>
@@ -97,6 +100,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tests\CatalogCreate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tests\CatalogDelete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

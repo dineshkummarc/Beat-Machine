@@ -24,7 +24,7 @@ namespace PhoneApp1
             InitializeComponent();
         }
 
-        
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Uri("/Tests/SongSearch.xaml", UriKind.Relative));
@@ -41,7 +41,6 @@ namespace PhoneApp1
         {
             NavigationService.Navigate(new Uri("/Tests/CatalogCreate.xaml", UriKind.Relative));
         }
-
 
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
@@ -64,5 +63,9 @@ namespace PhoneApp1
             NavigationService.Navigate(new Uri("/Tests/LocalMusicCatalog.xaml", UriKind.Relative));
         }
 
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/Tests/CatalogDelete.xaml", UriKind.Relative));
+        }
     }
 }
