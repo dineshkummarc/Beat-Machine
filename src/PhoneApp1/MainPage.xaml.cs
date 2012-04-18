@@ -43,7 +43,6 @@ namespace PhoneApp1
         }
 
 
-
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Uri("/Tests/CatalogUpdate.xaml", UriKind.Relative));
@@ -57,6 +56,11 @@ namespace PhoneApp1
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Uri("/Tests/CatalogRead.xaml", UriKind.Relative));
+        }
+
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/Tests/CatalogDelete.xaml", UriKind.Relative));
         }
 
     }

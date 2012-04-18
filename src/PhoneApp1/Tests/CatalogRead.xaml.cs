@@ -43,10 +43,15 @@ namespace PhoneApp1.Tests
             {
 
                 Catalog cat = (Catalog)e.GetResultData();
+                if(cat.Items.Count > 0)
+                {
                 result.Text = cat.Items
                    .Select<Song, string>((so) => DisplaySong(so))
                    .Aggregate<string>((sofar, current) =>
                        sofar + Environment.NewLine + current);
+                } else {
+                    result.Text = "Empty catalog";
+                }
             }
         }
 
