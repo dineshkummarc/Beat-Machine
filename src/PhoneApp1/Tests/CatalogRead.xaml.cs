@@ -29,7 +29,8 @@ namespace PhoneApp1.Tests
             api.CatalogReadCompleted += new EventHandler<EchoNestApiEventArgs>(api_CatalogReadCompleted);
             api.CatalogReadAsync(catalogId.Text, new Dictionary<string, string>
                 {
-                    {"bucket", "audio_summary"}
+                    {"bucket", "audio_summary"},
+                    {"results", "30"}
                 });
         }
 
@@ -41,7 +42,6 @@ namespace PhoneApp1.Tests
             }
             else
             {
-
                 Catalog cat = (Catalog)e.GetResultData();
                 result.Text = cat.Items
                    .Select<Song, string>((so) => DisplaySong(so))
