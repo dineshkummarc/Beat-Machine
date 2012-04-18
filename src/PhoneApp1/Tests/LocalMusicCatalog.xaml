@@ -1,16 +1,16 @@
 ﻿<phone:PhoneApplicationPage 
-    x:Class="PhoneApp1.MainPage"
+    x:Class="PhoneApp1.Tests.LocalMusicCatalog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -23,32 +23,22 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
             <TextBlock x:Name="ApplicationTitle" Text="MY APPLICATION" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock x:Name="PageTitle" Text="test harness" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock x:Name="PageTitle" Text="page name" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" Margin="12,0,12,0">
-            <!--ContentPanel - place additional content here-->
-            <Grid x:Name="ContentPanel" >
+            <Grid x:Name="ContentPanel">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="80" />
                     <RowDefinition Height="80" />
-                    <RowDefinition Height="80" />
-                    <RowDefinition Height="80" />
-                    <RowDefinition Height="80" />
-                    <RowDefinition Height="80" />
-                    <RowDefinition Height="80" />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
-                <Button Grid.Row="0" Grid.Column="0" Click="Button_Click" Content="song search" />
-                <Button Grid.Row="1" Grid.Column="0" Click="Button_Click_2" Content="catalog list" />
-                <Button Grid.Row="2" Grid.Column="0" Click="Button_Click_1" Content="catalog create" />
-                <Button Grid.Row="3" Grid.Column="0" Click="Button_Click_3" Content="catalog update" />
-                <Button Grid.Row="4" Grid.Column="0" Click="Button_Click_4" Content="catalog status" />
-                <Button Grid.Row="5" Grid.Column="0" Click="Button_Click_5" Content="catalog read" />
-                <Button Grid.Row="6" Grid.Column="0" Click="Button_Click_6" Content="local catalog" />
+                <Button Grid.Row="1" Grid.Column="0" Click="Button_Click"  Content="QueryLocal" />
+                <TextBox Grid.Row="2" Grid.Column="0" x:Name="result" TextWrapping="Wrap" />
             </Grid>
         </ScrollViewer>
     </Grid>
-
+ 
     <!--Sample code showing usage of ApplicationBar-->
     <!--<phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">

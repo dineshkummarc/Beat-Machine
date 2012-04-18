@@ -59,5 +59,10 @@ namespace PhoneApp1
             NavigationService.Navigate(new Uri("/Tests/CatalogRead.xaml", UriKind.Relative));
         }
 
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/Tests/LocalMusicCatalog.xaml", UriKind.Relative));
+        }
+
     }
 }

@@ -50,6 +50,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
@@ -78,6 +79,9 @@
     </Compile>
     <Compile Include="Tests\CatalogUpdate.xaml.cs">
       <DependentUpon>CatalogUpdate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\LocalMusicCatalog.xaml.cs">
+      <DependentUpon>LocalMusicCatalog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tests\SongSearch.xaml.cs">
       <DependentUpon>SongSearch.xaml</DependentUpon>
@@ -109,6 +113,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tests\CatalogUpdate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tests\LocalMusicCatalog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

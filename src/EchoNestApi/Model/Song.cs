@@ -169,6 +169,16 @@ namespace BeatMachine.EchoNest.Model
         }
 
         /// <summary>
+        /// Use in search or catalog update method
+        /// </summary>
+        [JsonProperty(PropertyName = "release")]
+        public string Release
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Use in search method
         /// </summary>
         [JsonProperty(PropertyName = "title")]

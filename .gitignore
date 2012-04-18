@@ -1,5 +1,11 @@
-src/BeatMachine.suo
-src/EchoNestApi/Bin
-src/EchoNestApi/obj
-src/PhoneApp1/Bin
-src/PhoneApp1/obj
+*.suo
+*.csproj.user
+*.user
+*.cache
+[Oo]bj/
+[Bb]in/
+[Aa]pp_Data/
+packages/*
+_ReSharper.*
+*[Rr]e[Ss]harper.user
+*.docstates
