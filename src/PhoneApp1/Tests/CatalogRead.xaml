@@ -33,11 +33,18 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="80" />
                     <RowDefinition Height="80" />
-                    <RowDefinition Height="*"/>
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <TextBox Grid.Row="0" Grid.Column="0" Name="catalogId" Text="CAACONL1366197A7EC" />            
                 <Button Grid.Row="1" Grid.Column="0" Click="Button_Click" Content="CatalogRead" />
-                <TextBox Grid.Row="2" Grid.Column="0" x:Name="result" TextWrapping="Wrap" HorizontalScrollBarVisibility="Auto" />
+                <ListBox Grid.Row="2" Grid.Column="0" x:Name="result"
+                         ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding}" TextWrapping="Wrap"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </Grid>
         </ScrollViewer>
     </Grid>

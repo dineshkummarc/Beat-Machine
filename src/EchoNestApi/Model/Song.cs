@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace BeatMachine.EchoNest.Model
 {
@@ -226,6 +227,26 @@ namespace BeatMachine.EchoNest.Model
         {
             get;
             set;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("{0} by {1}", SongName ?? "?", ArtistName ?? "?");
+            sb.AppendLine();
+            if (AudioSummary != null)
+            {
+                sb.AppendFormat("BPM: {0} ", AudioSummary.Tempo);
+                sb.AppendFormat("Dan: {0} ", AudioSummary.Danceability);
+                sb.AppendFormat("Dur: {0} ", AudioSummary.Duration);
+                sb.AppendFormat("Ene: {0} ", AudioSummary.Energy);
+                sb.AppendFormat("Key: {0} ", AudioSummary.Key);
+                sb.AppendFormat("Lou: {0} ", AudioSummary.Loudness);
+                sb.AppendFormat("Mod: {0} ", AudioSummary.Mode);
+                sb.AppendFormat("Sig {0} ", AudioSummary.TimeSignature);
+                sb.AppendLine();
+            }
+            return sb.ToString();
         }
     }
 }
