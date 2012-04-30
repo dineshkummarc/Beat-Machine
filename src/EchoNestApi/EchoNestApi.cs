@@ -47,16 +47,31 @@ namespace BeatMachine.EchoNest
             public const string CatalogDelete = "/catalog/delete";
         }
 
+        private bool dispatchOnUiThread;
+
         public string ApiKey
         {
             get; set;
 
         }
-
+       
         public EchoNestApi(string apiKey)
+            : this(apiKey, true)
+        {
+        }
+
+        /// <summary>
+        /// This constructor allows you to instruct the class to not try and
+        /// dispatch callbacks to the UI thread, but use the calling thread 
+        /// instead. Useful if you want to use this from a background
+        /// thread.
+        /// </summary>
+        public EchoNestApi(string apiKey, bool dispatchOnUiThread)
         {
             ApiKey = apiKey;
+            this.dispatchOnUiThread = dispatchOnUiThread;
         }
+
 
         /// <summary>
         /// Search for a song as documented here 
@@ -215,6 +230,12 @@ namespace BeatMachine.EchoNest
                 // If it is a GET, the parameters go in the query string
                 sb.Append(CreateQueryString(parameters));
                 h = new HttpHelper(sb.ToString());
+
+                // TODO Some networks exhibit excessive GET caching, and
+                // setting Cache-Control and Pragma did not work. EchoNest
+                // does not allow a cache buster in the URL. Haven't tried
+                // this idea Headers[HttpRequestHeader.IfModifiedSince] in 
+                // the past
             }
             else
             {
@@ -623,9 +644,17 @@ namespace BeatMachine.EchoNest
 
             if (e != null)
             {
-                // HttpWebRequest does its work on a background thread, 
-                // so dispatch to the UI thread for convenience
-                Deployment.Current.Dispatcher.BeginInvoke(() => e(this, args));
+                if (dispatchOnUiThread)
+                {
+                    // HttpWebRequest does its work on a background thread, 
+                    // so dispatch to the UI thread for convenience
+                    Deployment.Current.Dispatcher.BeginInvoke(() => e(this, args));
+                }
+                else
+                {
+                    // Dispatch on calling thread
+                    e(this, args);
+                }
             }
         }
 

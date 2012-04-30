@@ -12,9 +12,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using System.Threading;
 using BeatMachine.EchoNest;
 
-namespace PhoneApp1
+namespace App
 {
     public partial class App : Application
     {
@@ -23,12 +24,6 @@ namespace PhoneApp1
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
         public PhoneApplicationFrame RootFrame { get; private set; }
-
-        public EchoNestApi Api
-        {
-            get;
-            set;
-        }
 
         /// <summary>
         /// Constructor for the Application object.
@@ -63,38 +58,54 @@ namespace PhoneApp1
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
+
         }
 
-        public static string HandleError(Exception e)
+        public Model Model
         {
-            if (e is EchoNestApiException)
-            {
-                EchoNestApiException ex = e as EchoNestApiException;
-                return ex.Code + " " + ex.Message;
-            }
-            else
-            {
-                return e.Message;
-            }
+            get;
+            set;
+        }
+
+        public EchoNestApi Api
+        {
+            get;
+            set;
         }
 
         // Code to execute when the application is launching (eg, from Start)
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            Api = new EchoNestApi("R2O4VVBVN5EFMCJRP");
+            Model = new Model();
+            Api = new EchoNestApi("R2O4VVBVN5EFMCJRP", false);
+
+            ExecutionQueue.Enqueue(new WaitCallback(Model.GetSongsOnDevice),
+                ExecutionQueue.Policy.Immediate);
+            ExecutionQueue.Enqueue(new WaitCallback(Model.LoadCatalogId),
+                ExecutionQueue.Policy.Immediate);
         }
 
         // Code to execute when the application is activated (brought to foreground)
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            IDictionary<string, object> state =
+                PhoneApplicationService.Current.State;
+            state["Model"] = Model;
         }
 
         // Code to execute when the application is deactivated (sent to background)
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
+            IDictionary<string, object> state = 
+                PhoneApplicationService.Current.State;
+            
+            if (state.ContainsKey("Model"))
+            {
+                Model = (Model)state["Model"];
+            }
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
