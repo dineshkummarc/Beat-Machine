@@ -26,7 +26,7 @@ namespace PhoneApp1.Tests
         {
             EchoNestApi api = ((App)App.Current).Api;
             api.CatalogCreateCompleted += new EventHandler<EchoNestApiEventArgs>(api_CatalogCreateCompleted);
-            api.CatalogCreateAsync(catalogName.Text, "song", null);
+            api.CatalogCreateAsync(catalogName.Text, "song", null, null);
         }
 
         void api_CatalogCreateCompleted(object sender, EchoNestApiEventArgs e)

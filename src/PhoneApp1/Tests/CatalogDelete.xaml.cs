@@ -26,7 +26,7 @@ namespace PhoneApp1.Tests
         {
             EchoNestApi api = ((App)App.Current).Api;
             api.CatalogDeleteCompleted += new EventHandler<EchoNestApiEventArgs>(api_CatalogDeleteCompleted);
-            api.CatalogDeleteAsync(catalogId.Text, null);
+            api.CatalogDeleteAsync(catalogId.Text, null, null);
         }
 
         void api_CatalogDeleteCompleted(object sender, EchoNestApiEventArgs e)

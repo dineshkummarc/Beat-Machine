@@ -41,28 +41,28 @@ namespace BeatMachine.EchoNest.Model
             }
 
             [JsonProperty(PropertyName = "key")]
-            public Scale? Key
+            public virtual Scale? Key
             {
                 get;
                 set;
             }
 
             [JsonProperty(PropertyName = "tempo")]
-            public float? Tempo
+            public virtual float? Tempo
             {
                 get;
                 set;
             }
 
             [JsonProperty(PropertyName = "analysis_url")]
-            public Uri AnalysisUrl
+            public virtual Uri AnalysisUrl
             {
                 get;
                 set;
             }
 
             [JsonProperty(PropertyName = "audio_md5")]
-            public string AudioMd5
+            public virtual string AudioMd5
             {
                 get;
                 set;
@@ -72,7 +72,7 @@ namespace BeatMachine.EchoNest.Model
             /// Range is from 0 to 1
             /// </summary>
             [JsonProperty(PropertyName = "danceability")]
-            public float? Danceability
+            public virtual float? Danceability
             {
                 get;
                 set;
@@ -82,7 +82,7 @@ namespace BeatMachine.EchoNest.Model
             /// In seconds
             /// </summary>
             [JsonProperty(PropertyName = "duration")]
-            public float? Duration
+            public virtual float? Duration
             {
                 get;
                 set;
@@ -92,7 +92,7 @@ namespace BeatMachine.EchoNest.Model
             /// Range is from 0 to 1
             /// </summary>
             [JsonProperty(PropertyName = "energy")]
-            public float? Energy
+            public virtual float? Energy
             {
                 get;
                 set;
@@ -103,7 +103,7 @@ namespace BeatMachine.EchoNest.Model
             /// Measured in dB
             /// </summary>
             [JsonProperty(PropertyName = "loudness")]
-            public float? Loudness
+            public virtual float? Loudness
             {
                 get;
                 set;
@@ -111,7 +111,7 @@ namespace BeatMachine.EchoNest.Model
 
 
             [JsonProperty(PropertyName = "mode")]
-            public AudioMode? Mode
+            public virtual AudioMode? Mode
             {
                 get;
                 set;
@@ -121,7 +121,7 @@ namespace BeatMachine.EchoNest.Model
             /// Beats per measure
             /// </summary>
             [JsonProperty(PropertyName = "time_signature")]
-            public int? TimeSignature
+            public virtual int? TimeSignature
             {
                 get;
                 set;
@@ -133,7 +133,7 @@ namespace BeatMachine.EchoNest.Model
         /// Use in search or catalog update methods
         /// </summary>
         [JsonProperty(PropertyName = "artist_id")]
-        public string ArtistId
+        public virtual string ArtistId
         {
             get;
             set;
@@ -143,7 +143,7 @@ namespace BeatMachine.EchoNest.Model
         /// Use in search and catalog read methods
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public string Id
+        public virtual string Id
         {
             get;
             set;
@@ -153,7 +153,7 @@ namespace BeatMachine.EchoNest.Model
         /// Use in catalog update method
         /// </summary>
         [JsonProperty(PropertyName = "item_id")]
-        public string ItemId
+        public virtual string ItemId
         {
             get;
             set;
@@ -163,7 +163,7 @@ namespace BeatMachine.EchoNest.Model
         /// Use in search or catalog update method
         /// </summary>
         [JsonProperty(PropertyName = "artist_name")]
-        public string ArtistName
+        public virtual string ArtistName
         {
             get;
             set;
@@ -173,7 +173,7 @@ namespace BeatMachine.EchoNest.Model
         /// Use in search or catalog update method
         /// </summary>
         [JsonProperty(PropertyName = "release")]
-        public string Release
+        public virtual string Release
         {
             get;
             set;
@@ -183,7 +183,7 @@ namespace BeatMachine.EchoNest.Model
         /// Use in search method
         /// </summary>
         [JsonProperty(PropertyName = "title")]
-        public string Title
+        public virtual string Title
         {
             get;
             set;
@@ -193,7 +193,7 @@ namespace BeatMachine.EchoNest.Model
         /// Use in catalog update method
         /// </summary>
         [JsonProperty(PropertyName = "song_name")]
-        public string SongName
+        public virtual string SongName
         {
             get;
             set;
@@ -203,7 +203,7 @@ namespace BeatMachine.EchoNest.Model
         /// Use in catalog read method
         /// </summary>
         [JsonProperty(PropertyName = "song_id")]
-        public string SongId
+        public virtual string SongId
         {
             get;
             set;
@@ -223,7 +223,7 @@ namespace BeatMachine.EchoNest.Model
         /// Use in catalog read method
         /// </summary>
         [JsonProperty(PropertyName = "request")]
-        public Song Request
+        public virtual Song Request
         {
             get;
             set;

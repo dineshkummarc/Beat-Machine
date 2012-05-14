@@ -26,7 +26,7 @@ namespace PhoneApp1.Tests
         {
             EchoNestApi api = ((App)App.Current).Api;
             api.CatalogStatusCompleted += new EventHandler<EchoNestApiEventArgs>(api_CatalogStatusCompleted);
-            api.CatalogStatusAsync(ticketId.Text, null);
+            api.CatalogStatusAsync(ticketId.Text, null, null);
         }
 
         void api_CatalogStatusCompleted(object sender, EchoNestApiEventArgs e)

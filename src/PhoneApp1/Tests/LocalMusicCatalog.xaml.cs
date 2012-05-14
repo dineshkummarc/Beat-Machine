@@ -44,7 +44,7 @@ namespace PhoneApp1.Tests
             catalog.Id = catalogId.Text;
             catalog.SongActions = songsActions;
 
-            api.CatalogUpdateAsync(catalog, null);
+            api.CatalogUpdateAsync(catalog, null, null);
         }
 
         void api_CatalogUpdateCompleted(object sender, EchoNestApiEventArgs e)

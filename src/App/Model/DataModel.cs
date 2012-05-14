@@ -4,50 +4,68 @@ using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Threading;
 using BeatMachine.EchoNest;
-using Microsoft.Xna.Framework.Media;
-using BMCatalog = BeatMachine.EchoNest.Model.Catalog;
-using BMSong = BeatMachine.EchoNest.Model.Song;
+using System.ComponentModel;
+using System.Collections.ObjectModel;
+using BeatMachine.EchoNest.Model;
+using XnaSong = Microsoft.Xna.Framework.Media.Song;
+using XnaMediaLibrary = Microsoft.Xna.Framework.Media.MediaLibrary;
 
-namespace App
+
+namespace BeatMachine.Model
 {
-    public class Model
+    public class DataModel : INotifyPropertyChanged
     {
-        public List<BMSong> SongsOnDevice
+        private List<Song> songsOnDevice;
+        public List<Song> SongsOnDevice
         {
-            get;
-            set;
+            get { return songsOnDevice; }
+            set
+            {
+                songsOnDevice = value; 
+                OnPropertyChanged("SongsOnDevice"); 
+            }
         }
 
-        public List<BMSong> AnalyzedSongs
+        private List<Song> analyzedSongs;
+        public List<Song> AnalyzedSongs
         {
-            get; set;
+            get { return analyzedSongs; }
+            set {
+                analyzedSongs = value;
+                OnPropertyChanged("AnalyzedSongs"); 
+            }
         }
 
+        private string catalogId;
         public string CatalogId
         {
-            get;
-            set;
+            get { return catalogId; }
+            set
+            {
+                catalogId = value;
+                OnPropertyChanged("CatalogId");
+            }
         }
 
-        public Model()
+        public DataModel()
         {
-            SongsOnDevice = new List<BMSong>();
-            AnalyzedSongs = new List<BMSong>();
+            SongsOnDevice = new List<Song>();
+            AnalyzedSongs = new List<Song>();
             CatalogId = String.Empty;
         }
 
         public static void GetSongsOnDevice(object state)
         {
             App thisApp = App.Current as App;
-            List<BMSong> songs = thisApp.Model.SongsOnDevice;
+            List<Song> songs = thisApp.Model.SongsOnDevice;
             
             lock(songs){
                 if (songs.Count == 0)
                 {
-                    using (var mediaLib = new MediaLibrary())
+                    using (var mediaLib = new XnaMediaLibrary())
                     {
                         songs.AddRange(mediaLib.Songs
-                            .Select<Song, BMSong>((s) => new BMSong{
+                            .Select<XnaSong, Song>((s) => new Song{
                                 ItemId = string
                                     .Concat(s.Artist.Name, s.Name)
                                     .Replace(" ", ""),
@@ -55,14 +73,17 @@ namespace App
                                 SongName = s.Name
                             }));
                     }
+
+                    thisApp.Model.OnPropertyChanged("SongsOnDevice");
                 }
             }
+
         }
 
         public static void GetAnalyzedSongs(object state)
         {
             App thisApp = App.Current as App;
-            List<BMSong> songs = thisApp.Model.AnalyzedSongs;
+            List<Song> songs = thisApp.Model.AnalyzedSongs;
 
             lock (songs)
             {
@@ -87,22 +108,22 @@ namespace App
         {
             App thisApp = App.Current as App;
             bool loadedId = false;
+            string id;
 
             lock (thisApp.Model.CatalogId)
             {
                 if (String.IsNullOrEmpty(thisApp.Model.CatalogId))
                 {
-                    string id;
                     if (IsolatedStorageSettings.ApplicationSettings.
                         TryGetValue<string>("CatalogId", out id))
                     {
-                        thisApp.Model.CatalogId = id;
                         loadedId = true;
                     }
                 }
                 else
                 {
                     loadedId = true;
+                    id = thisApp.Model.CatalogId;
                 }
             }
 
@@ -112,7 +133,7 @@ namespace App
             }
             else
             {
-                LoadCatalogIdNeedsToCheckCatalogId();
+                LoadCatalogIdNeedsToCheckCatalogId(id);
             }   
         }
 
@@ -121,28 +142,31 @@ namespace App
             App thisApp = App.Current as App;
 
             thisApp.Api.CatalogCreateCompleted +=
-                new EventHandler<BeatMachine.EchoNest.EchoNestApiEventArgs>(Api_CatalogCreateCompleted);
-            thisApp.Api.CatalogCreateAsync(Guid.NewGuid().ToString(), "song", null);
+                new EventHandler<EchoNestApiEventArgs>(
+                    Api_CatalogCreateCompleted);
+            thisApp.Api.CatalogCreateAsync(Guid.NewGuid().ToString(), "song", 
+                null, null);
         }
 
 
-        private static void LoadCatalogIdNeedsToCheckCatalogId()
+        private static void LoadCatalogIdNeedsToCheckCatalogId(string id)
         {
             App thisApp = App.Current as App;
 
             thisApp.Api.CatalogReadCompleted +=
-                   new EventHandler<BeatMachine.EchoNest.EchoNestApiEventArgs>(Api_CatalogReadCompleted);
-            thisApp.Api.CatalogReadAsync(thisApp.Model.CatalogId, null);
+                   new EventHandler<EchoNestApiEventArgs>(
+                       Api_CatalogReadCompleted);
+            thisApp.Api.CatalogReadAsync(id, null, null);
         }
 
-        static void Api_CatalogCreateCompleted(object sender, BeatMachine.EchoNest.EchoNestApiEventArgs e)
+        static void Api_CatalogCreateCompleted(object sender, EchoNestApiEventArgs e)
         {
 
             if (e.Error == null)
             {
                 App thisApp = App.Current as App;
 
-                BMCatalog cat = (BMCatalog)e.GetResultData();
+                Catalog cat = (Catalog)e.GetResultData();
 
                 // TODO If isolated storage fails here, then the next time they 
                 // run the app, we will create another catalog. We need to handle
@@ -152,12 +176,12 @@ namespace App
 
                 lock (thisApp.Model.CatalogId)
                 {
-                    thisApp.Model.CatalogId = cat.Id;
-
                     // Store in isolated storage
                     IsolatedStorageSettings.ApplicationSettings["CatalogId"] =
-                        thisApp.Model.CatalogId;
+                        cat.Id;
                     IsolatedStorageSettings.ApplicationSettings.Save();
+
+                    thisApp.Model.CatalogId = cat.Id;
                 }
             }
             else
@@ -167,7 +191,8 @@ namespace App
             }
         }
 
-        static void Api_CatalogReadCompleted(object sender, BeatMachine.EchoNest.EchoNestApiEventArgs e)
+        static void Api_CatalogReadCompleted(object sender, 
+            EchoNestApiEventArgs e)
         {
             if (e.Error != null)
             {
@@ -187,14 +212,31 @@ namespace App
             else
             {
                 // This catalog exists, everything is great 
+                App thisApp = App.Current as App;
+                Catalog cat = (Catalog)e.GetResultData();
+                lock (thisApp.Model.CatalogId)
+                {
+                    thisApp.Model.CatalogId = cat.Id;
+                }
             }
         }
 
         private static void LoadCatalogIdNeedsToRunAgain()
         {
-            ExecutionQueue.Enqueue(new WaitCallback(Model.LoadCatalogId),
+            ExecutionQueue.Enqueue(new WaitCallback(DataModel.LoadCatalogId),
                 ExecutionQueue.Policy.Queued);
         }
 
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

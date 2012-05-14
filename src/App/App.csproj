@@ -9,7 +9,7 @@
     <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>App</RootNamespace>
+    <RootNamespace>BeatMachine</RootNamespace>
     <AssemblyName>App</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
@@ -22,7 +22,7 @@
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
     <XapFilename>App.xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
-    <SilverlightAppEntry>App.App</SilverlightAppEntry>
+    <SilverlightAppEntry>BeatMachine.App</SilverlightAppEntry>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
   </PropertyGroup>
@@ -51,6 +51,7 @@
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Interop" />
     <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="system.data.linq" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
@@ -66,7 +67,9 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model.cs" />
+    <Compile Include="Model\DataContext.cs" />
+    <Compile Include="Model\DataModel.cs" />
+    <Compile Include="Model\AnalyzedSong.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

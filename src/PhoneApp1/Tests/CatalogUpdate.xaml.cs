@@ -40,7 +40,7 @@ namespace PhoneApp1.Tests
                     }
                 }
             };
-            api.CatalogUpdateAsync(cat, null);
+            api.CatalogUpdateAsync(cat, null, null);
         }
 
         void api_CatalogUpdateCompleted(object sender, EchoNestApiEventArgs e)

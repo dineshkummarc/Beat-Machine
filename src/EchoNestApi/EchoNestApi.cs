@@ -78,9 +78,10 @@ namespace BeatMachine.EchoNest
         /// http://developer.echonest.com/docs/v4/song.html#search 
         /// </summary>
         /// <param name="parameters">See link for list of parameters</param>
-        public void SongSearchAsync(Dictionary<string, string> parameters)
+        public void SongSearchAsync(Dictionary<string, string> parameters,
+            object state)
         {
-            SendHttpRequest(EchoNestPaths.SongSearch, parameters, null);
+            SendHttpRequest(EchoNestPaths.SongSearch, parameters, null, state);
         }
 
         /// <summary>
@@ -92,7 +93,7 @@ namespace BeatMachine.EchoNest
         /// "song"</param>
         /// <param name="parameters">See link for list of parameters</param>
         public void CatalogCreateAsync(string name, string type, 
-            Dictionary<string, string> parameters)
+            Dictionary<string, string> parameters, object state)
         {
             InitializeParameters(ref parameters);
             parameters["name"] = name;
@@ -100,7 +101,8 @@ namespace BeatMachine.EchoNest
 
             // TODO Add support for artist catalogs
 
-            SendHttpRequest(EchoNestPaths.CatalogCreate, parameters, null);
+            SendHttpRequest(EchoNestPaths.CatalogCreate, parameters, null, 
+                state);
         }
 
         /// <summary>
@@ -108,9 +110,11 @@ namespace BeatMachine.EchoNest
         /// http://developer.echonest.com/docs/v4/catalog.html#list
         /// </summary>
         /// <param name="parameters">See link for list of parameters</param>
-        public void CatalogListAsync(Dictionary<string, string> parameters)
+        public void CatalogListAsync(Dictionary<string, string> parameters,
+            object state)
         {
-            SendHttpRequest(EchoNestPaths.CatalogList, parameters, null);
+            SendHttpRequest(EchoNestPaths.CatalogList, parameters, null, 
+                state);
         }
 
         /// <summary>
@@ -120,11 +124,12 @@ namespace BeatMachine.EchoNest
         /// <param name="id">The catalog ID</param>
         /// <param name="parameters">See link for list of parameters</param>
         public void CatalogDeleteAsync(string id, Dictionary<string, string>
-            parameters)
+            parameters, object state)
         {
             InitializeParameters(ref parameters);
             parameters["id"] = id;
-            SendHttpRequest(EchoNestPaths.CatalogDelete, parameters, null);
+            SendHttpRequest(EchoNestPaths.CatalogDelete, parameters, null, 
+                state);
         }
 
         /// <summary>
@@ -138,7 +143,7 @@ namespace BeatMachine.EchoNest
         /// members.</param>
         /// <param name="parameters">See link for list of parameters</param>
         public void CatalogUpdateAsync(Catalog cat, 
-            Dictionary<string, string> parameters)
+            Dictionary<string, string> parameters, object state)
         {
             InitializeParameters(ref parameters);
             parameters["id"] = cat.Id;
@@ -146,7 +151,7 @@ namespace BeatMachine.EchoNest
 
             // TODO Add support for artist catalogs
             SendHttpRequest(EchoNestPaths.CatalogUpdate, parameters, 
-                cat.SongActions);
+                cat.SongActions, state);
         }
 
         /// <summary>
@@ -157,11 +162,12 @@ namespace BeatMachine.EchoNest
         /// CatalogUpdate method</param>
         /// <param name="parameters">See link for list of parameters</param>
         public void CatalogStatusAsync(string ticket,
-            Dictionary<string, string> parameters)
+            Dictionary<string, string> parameters, object state)
         {
             InitializeParameters(ref parameters);
             parameters["ticket"] = ticket;
-            SendHttpRequest(EchoNestPaths.CatalogStatus, parameters, null);
+            SendHttpRequest(EchoNestPaths.CatalogStatus, parameters, null, 
+                state);
 
         }
 
@@ -172,11 +178,12 @@ namespace BeatMachine.EchoNest
         /// <param name="catalogId">The catalog ID</param>
         /// <param name="parameters">See link for list of parameters</param>
         public void CatalogReadAsync(string catalogId,
-            Dictionary<string, string> parameters)
+            Dictionary<string, string> parameters, object state)
         {
             InitializeParameters(ref parameters);
             parameters["id"] = catalogId;
-            SendHttpRequest(EchoNestPaths.CatalogRead, parameters, null);
+            SendHttpRequest(EchoNestPaths.CatalogRead, parameters, null,
+                state);
         }
 
 
@@ -196,7 +203,7 @@ namespace BeatMachine.EchoNest
         /// throttling calls, so we wrap all requests through this method.
         /// </summary>
         private void SendHttpRequest(string path, 
-            Dictionary<string, string> parameters, object body)
+            Dictionary<string, string> parameters, object body, object state)
         {
             InitializeParameters(ref parameters);
             parameters["api_key"] = ApiKey;
@@ -256,7 +263,11 @@ namespace BeatMachine.EchoNest
             if (isGet)
             {
                 // No body to write first, just read the response
-                h.OpenReadAsync(path);
+                h.OpenReadAsync(new Dictionary<string, object>
+                {
+                    {"path", path},
+                    {"userState", state}
+                });
             }
             else
             {
@@ -268,7 +279,8 @@ namespace BeatMachine.EchoNest
                 {
                     {"path", path},
                     {"parameters", parameters},
-                    {"body", body}
+                    {"body", body},
+                    {"userState", state}
                 });
 
             }
@@ -286,13 +298,15 @@ namespace BeatMachine.EchoNest
                 (Dictionary<string, object>)e.UserState;
             string path = (string)state["path"];
             object body = state["body"];
+            object userState = state["userState"];
             Dictionary<string, string> parameters = 
                 (Dictionary<string, string>)state["parameters"];
             HttpHelper h = (HttpHelper)sender;
 
             if (e.Cancelled)
             {
-                args = new EchoNestApiEventArgs(e.Error, true, null, null);
+                args = new EchoNestApiEventArgs(e.Error, true, userState, 
+                    null);
             }
             else if (e.Error == null)
             {
@@ -314,13 +328,17 @@ namespace BeatMachine.EchoNest
                         
                     }
 
-                    h.OpenReadAsync(path);
+                    h.OpenReadAsync(new Dictionary<string, object>
+                    {
+                        {"path", path},
+                        {"userState", state}
+                    });        
                     return;
                 }
                 catch (Exception ex)
                 {
                     args = new EchoNestApiEventArgs(ex,
-                        h.HttpWebRequest.IsCancelled, null, null);
+                        h.HttpWebRequest.IsCancelled, userState, null);
                 }
             }
             else
@@ -335,7 +353,8 @@ namespace BeatMachine.EchoNest
                     }
                 }
 
-                args = new EchoNestApiEventArgs(e.Error, false, null, null);
+                args = new EchoNestApiEventArgs(e.Error, false, userState, 
+                    null);
                 
             }
 
@@ -404,14 +423,18 @@ namespace BeatMachine.EchoNest
             OpenReadCompletedEventArgs e)
         {
             EchoNestApiEventArgs args = null;
-            string path = (string)e.UserState;
+            Dictionary<string, object> state = 
+                (Dictionary<string, object>)e.UserState;
+            string path = (string)state["path"];
+            object userState = state["userState"];
             HttpHelper h = (HttpHelper)sender;
 
             // TODO catch exception if network is not present
 
             if (e.Cancelled)
             {
-                args = new EchoNestApiEventArgs(e.Error, true, null, null);
+                args = new EchoNestApiEventArgs(e.Error, true, userState, 
+                    null);
             }
             else if (e.Error == null)
             {
@@ -429,16 +452,17 @@ namespace BeatMachine.EchoNest
                         }
                     }
 
-                    if (!ResponseContainsError(responseString, out args))
+                    if (!ResponseContainsError(responseString, out args, 
+                        userState))
                     {
-                        args = HandleResponse(path, responseString);
+                        args = HandleResponse(path, responseString, userState);
                     }
 
                 }
                 catch (Exception ex)
                 {
                     args = new EchoNestApiEventArgs(ex, 
-                        h.HttpWebRequest.IsCancelled, null, null);
+                        h.HttpWebRequest.IsCancelled, userState, null);
                 }
 
             }
@@ -462,7 +486,7 @@ namespace BeatMachine.EchoNest
                             }
 
                             if (ResponseContainsError(responseString,
-                                out args))
+                                out args, userState))
                             {
                                 returnGenericError = false;
                             }
@@ -472,7 +496,8 @@ namespace BeatMachine.EchoNest
 
                 if (returnGenericError)
                 {
-                    args = new EchoNestApiEventArgs(ex, false, null, null);
+                    args = new EchoNestApiEventArgs(ex, false, userState, 
+                        null);
                 }
             }
 
@@ -488,7 +513,7 @@ namespace BeatMachine.EchoNest
         /// information</param>
         /// <returns>True if the response contains an error status</returns>
         private bool ResponseContainsError(string responseString, 
-            out EchoNestApiEventArgs args)
+            out EchoNestApiEventArgs args, object userState)
         {
             args = null;
 
@@ -502,7 +527,8 @@ namespace BeatMachine.EchoNest
                     EchoNestApiException enx = new EchoNestApiException(
                         (EchoNestApiException.EchoNestApiExceptionType)code,
                         (string)jo["message"]);
-                    args = new EchoNestApiEventArgs(enx, false, null, null);
+                    args = new EchoNestApiEventArgs(enx, false, userState, 
+                        null);
                     return true;
                 }
             }
@@ -523,31 +549,32 @@ namespace BeatMachine.EchoNest
         /// a simple trick to demultiplex the response handling for different 
         /// methods.
         /// </summary>
-        private EchoNestApiEventArgs HandleResponse(string path, string response)
+        private EchoNestApiEventArgs HandleResponse(string path, string response,
+            object userState)
         {
             EchoNestApiEventArgs args = null;
             switch (path)
             {
                 case EchoNestPaths.SongSearch:
-                    args = HandleSongSearchResponse(response);
+                    args = HandleSongSearchResponse(response, userState);
                     break;
                 case EchoNestPaths.CatalogCreate:
-                    args = HandleCatalogCreateResponse(response);
+                    args = HandleCatalogCreateResponse(response, userState);
                     break;
                 case EchoNestPaths.CatalogList:
-                    args = HandleCatalogListResponse(response);
+                    args = HandleCatalogListResponse(response, userState);
                     break;
                 case EchoNestPaths.CatalogUpdate:
-                    args = HandleCatalogUpdateResponse(response);
+                    args = HandleCatalogUpdateResponse(response, userState);
                     break;
                 case EchoNestPaths.CatalogStatus:
-                    args = HandleCatalogStatusResponse(response);
+                    args = HandleCatalogStatusResponse(response, userState);
                     break;
                 case EchoNestPaths.CatalogRead:
-                    args = HandleCatalogReadResponse(response);
+                    args = HandleCatalogReadResponse(response, userState);
                     break;
                 case EchoNestPaths.CatalogDelete:
-                    args = HandleCatalogDeleteResponse(response);
+                    args = HandleCatalogDeleteResponse(response, userState);
                     break;
             }
 
@@ -555,60 +582,65 @@ namespace BeatMachine.EchoNest
         }
 
         private EchoNestApiEventArgs HandleCatalogUpdateResponse(
-            string response)
+            string response, object state)
         {
             JToken jo = JObject.Parse(response)["response"];
-            return new EchoNestApiEventArgs(null, false, null,
+            return new EchoNestApiEventArgs(null, false, state,
                 (string)jo["ticket"]);
         }
 
-        private EchoNestApiEventArgs HandleSongSearchResponse(string response)
+        private EchoNestApiEventArgs HandleSongSearchResponse(string response,
+            object state)
         {
             JToken jo = JObject.Parse(response)["response"]["songs"];
             List<Song> result = 
                 JsonConvert.DeserializeObject<List<Song>>(jo.ToString());
-            return new EchoNestApiEventArgs(null, false, null, result);
-
+            return new EchoNestApiEventArgs(null, false, state, result);
         }
 
-        private EchoNestApiEventArgs HandleCatalogCreateResponse(string response)
+        private EchoNestApiEventArgs HandleCatalogCreateResponse(string response, 
+            object state)
         {
             JToken jo = JObject.Parse(response)["response"];
             Catalog result = JsonConvert.DeserializeObject<Catalog>(jo.ToString());
-            return new EchoNestApiEventArgs(null, false, null, result);
+            return new EchoNestApiEventArgs(null, false, state, result);
         }
 
-        private EchoNestApiEventArgs HandleCatalogListResponse(string response)
+        private EchoNestApiEventArgs HandleCatalogListResponse(string response,
+            object state)
         {
             JToken jo = JObject.Parse(response)["response"]["catalogs"];
             List<Catalog> result =
                 JsonConvert.DeserializeObject<List<Catalog>>(jo.ToString());
-            return new EchoNestApiEventArgs(null, false, null, result);
+            return new EchoNestApiEventArgs(null, false, state, result);
 
         }
 
-        private EchoNestApiEventArgs HandleCatalogStatusResponse(string response)
+        private EchoNestApiEventArgs HandleCatalogStatusResponse(string response,
+            object state)
         {
             JToken jo = JObject.Parse(response)["response"];
             Ticket result = JsonConvert.DeserializeObject<Ticket>(
                 jo.ToString());
-            return new EchoNestApiEventArgs(null, false, null, result);
+            return new EchoNestApiEventArgs(null, false, state, result);
         }
 
-        private EchoNestApiEventArgs HandleCatalogReadResponse(string response)
+        private EchoNestApiEventArgs HandleCatalogReadResponse(string response,
+            object state)
         {
             JToken jo = JObject.Parse(response)["response"]["catalog"];
             Catalog result = JsonConvert.DeserializeObject<Catalog>(
                 jo.ToString());
-            return new EchoNestApiEventArgs(null, false, null, result);
+            return new EchoNestApiEventArgs(null, false, state, result);
         }
 
-        private EchoNestApiEventArgs HandleCatalogDeleteResponse(string response)
+        private EchoNestApiEventArgs HandleCatalogDeleteResponse(string response,
+            object state)
         {
             JToken jo = JObject.Parse(response)["response"];
             Catalog result = JsonConvert.DeserializeObject<Catalog>(
             jo.ToString());
-            return new EchoNestApiEventArgs(null, false, null, result);
+            return new EchoNestApiEventArgs(null, false, state, result);
         }
 
         /// <summary>

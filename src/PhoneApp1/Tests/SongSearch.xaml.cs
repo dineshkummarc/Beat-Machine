@@ -31,7 +31,7 @@ namespace PhoneApp1.Tests
                 {
                     { "title", title.Text},
                     { "artist", artist.Text }
-                });
+                }, null);
 
         }
 

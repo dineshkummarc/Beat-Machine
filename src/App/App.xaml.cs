@@ -14,8 +14,10 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Threading;
 using BeatMachine.EchoNest;
+using System.ComponentModel;
+using BeatMachine.Model;
 
-namespace App
+namespace BeatMachine
 {
     public partial class App : Application
     {
@@ -59,9 +61,20 @@ namespace App
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
+            // Create the database if it does not exist.
+            using (BeatMachineDataContext db =
+                new BeatMachineDataContext(BeatMachineDataContext.DBConnectionString))
+            {
+                if (db.DatabaseExists() == false)
+                {
+                    //Create the database
+                    db.CreateDatabase();
+                }
+            }
+
         }
 
-        public Model Model
+        public Model.DataModel Model
         {
             get;
             set;
@@ -77,13 +90,46 @@ namespace App
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            Model = new Model();
+            Model = new Model.DataModel();
             Api = new EchoNestApi("R2O4VVBVN5EFMCJRP", false);
+            bool songsOnDeviceReady = false;
+            bool analyzedSongsReady = false;
+            bool catalogIdReady = false;
 
-            ExecutionQueue.Enqueue(new WaitCallback(Model.GetSongsOnDevice),
+
+            ExecutionQueue.Enqueue(
+                new WaitCallback(BeatMachine.Model.DataModel.GetAnalyzedSongs),
                 ExecutionQueue.Policy.Immediate);
-            ExecutionQueue.Enqueue(new WaitCallback(Model.LoadCatalogId),
+            ExecutionQueue.Enqueue(
+                new WaitCallback(BeatMachine.Model.DataModel.GetAnalyzedSongs),
                 ExecutionQueue.Policy.Immediate);
+            ExecutionQueue.Enqueue(
+                new WaitCallback(BeatMachine.Model.DataModel.LoadCatalogId),
+                ExecutionQueue.Policy.Immediate);
+            Model.PropertyChanged += new PropertyChangedEventHandler(
+                (pSender, pE) =>
+                {
+                    if (String.Equals(pE.PropertyName, "CatalogId") &&
+                        !String.IsNullOrEmpty(Model.CatalogId))
+                    {
+                        catalogIdReady = true;
+                    }
+                    else if (String.Equals(pE.PropertyName, "SongsOnDevice") &&
+                        Model.SongsOnDevice.Count > 0)
+                    {
+                        songsOnDeviceReady = true;
+                    }
+                    else if (String.Equals(pE.PropertyName, "AnalyzedSongs") &&
+                        Model.AnalyzedSongs.Count > 0)
+                    {
+                        analyzedSongsReady = true;
+                    }
+
+                    if (catalogIdReady && songsOnDeviceReady && analyzedSongsReady)
+                    {
+                        // Unicorns!
+                    }
+                });
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -104,7 +150,7 @@ namespace App
             
             if (state.ContainsKey("Model"))
             {
-                Model = (Model)state["Model"];
+                Model = (Model.DataModel)state["Model"];
             }
         }
 

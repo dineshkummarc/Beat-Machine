@@ -11,7 +11,7 @@ using System.Windows.Shapes;
 using System.Threading;
 using System.Collections.Generic;
 
-namespace App
+namespace BeatMachine
 {
     public static class ExecutionQueue
     {
@@ -21,13 +21,14 @@ namespace App
             Queued
         }
 
-        private static int period = 10;
+        private static int period = 15;
         private static Timer timer = new Timer(new TimerCallback(Dequeue),
                 null,
                 TimeSpan.FromSeconds(period),
                 TimeSpan.FromSeconds(period));
         private static List<WaitCallback> queue = new List<WaitCallback>();
-        
+        private static bool cooledDown = false;
+
         /// <summary>
         /// Delay between invoking WaitCallbacks passed to Enqueue when the
         /// policy is Queued, measured in seconds.
@@ -40,12 +41,20 @@ namespace App
             
         public static void Dequeue(object stateInfo)
         {
-            if (queue.Count != 0)
+            lock (queue)
             {
-                ThreadPool.QueueUserWorkItem(queue[0]);
-                lock (queue)
+                if (queue.Count != 0)
                 {
+                    ThreadPool.QueueUserWorkItem(queue[0]);
+                    cooledDown = false;
                     queue.RemoveAt(0);
+                }
+                else
+                {
+                    // When we try to dequeue and the queue is empty, that 
+                    // means a full period has passed until we last 
+                    // executed an item
+                    cooledDown = true;
                 }
             }
         }
@@ -60,7 +69,15 @@ namespace App
                 case Policy.Queued:
                     lock (queue)
                     {
-                        queue.Add(callback);
+                        if (cooledDown)
+                        {
+                            ThreadPool.QueueUserWorkItem(
+                                new WaitCallback(callback));
+                        }
+                        else
+                        {
+                            queue.Add(callback);
+                        }
                     }
                     break;
             }

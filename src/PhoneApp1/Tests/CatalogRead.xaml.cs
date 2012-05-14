@@ -32,7 +32,7 @@ namespace PhoneApp1.Tests
                 {
                     {"bucket", "audio_summary"},
                     {"results", "100"}
-                });
+                }, null);
         }
 
         void api_CatalogReadCompleted(object sender, EchoNestApiEventArgs e)
@@ -48,7 +48,7 @@ namespace PhoneApp1.Tests
                 {
                     result.ItemsSource = cat.Items;
                 }
-                else
+                else 
                 {
                     result.ItemsSource = new List<string> { "Empty catalog " };
                 }
