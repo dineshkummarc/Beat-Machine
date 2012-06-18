@@ -32,70 +32,63 @@ namespace BeatMachine.Model
             {
                 if (!String.Equals(analyzedSongId, value))
                 {
-                    NotifyPropertyChanging("IsComplete");
+                    NotifyPropertyChanging("AnalyzedSongId");
                     analyzedSongId = value;
-                    NotifyPropertyChanged("IsComplete");
+                    NotifyPropertyChanged("AnalyzedSongId");
                 }
             }
         }
 
-        private string songId;
-
         [Column]
-        public override string SongId
+        public override string ItemId
         {
             get
             {
-                return songId;
+                return base.ItemId;
             }
             set
             {
-                if (!String.Equals(songId, value))
+                if (!String.Equals(base.ItemId, value))
                 {
-                    NotifyPropertyChanging("IsComplete");
-                    songId = value;
-                    NotifyPropertyChanged("IsComplete");
+                    NotifyPropertyChanging("ItemId");
+                    base.ItemId = value;
+                    NotifyPropertyChanged("ItemId");
                 }
             }
         }
-
-
-        private string songName;
 
         [Column]
         public override string SongName
         {
             get
             {
-                return songName;
+                return base.SongName;
             }
             set
             {
-                if (!String.Equals(songName, value))
+                if (!String.Equals(base.SongName, value))
                 {
-                    NotifyPropertyChanging("IsComplete");
-                    songName = value;
-                    NotifyPropertyChanged("IsComplete");
+                    NotifyPropertyChanging("SongName");
+                    base.SongName = value;
+                    NotifyPropertyChanged("SongName");
                 }
             }
         }
-
-        private string artistName;
 
         [Column]
         public override string ArtistName
         {
             get
             {
-                return artistName;
+                return base.ArtistName;
             }
             set
             {
-                if (!String.Equals(artistName, value))
+                if (!String.Equals(base.ArtistName, value))
                 {
-                    NotifyPropertyChanging("IsComplete");
-                    artistName = value;
-                    NotifyPropertyChanged("IsComplete");
+                    NotifyPropertyChanging("ArtistName");
+                    base.ArtistName = value;
+                    NotifyPropertyChanged("ArtistName");
                 }
             }
         }
@@ -106,7 +99,7 @@ namespace BeatMachine.Model
         {
             private int summaryId;
 
-            [Column(IsPrimaryKey = true)]
+            [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "INT NOT NULL Identity", CanBeNull = false, AutoSync = AutoSync.OnInsert)]
             public int SummaryId
             {
                 set { summaryId = value; }
@@ -114,22 +107,20 @@ namespace BeatMachine.Model
 
             }
 
-            private float? tempo;
-
             [Column]
             public override float? Tempo
             {
                 get
                 {
-                    return tempo;
+                    return base.Tempo;
                 }
                 set
                 {
-                    if (value != tempo)
+                    if (value != base.Tempo)
                     {
-                        NotifyPropertyChanging("IsComplete");
-                        tempo = value;
-                        NotifyPropertyChanged("IsComplete");
+                        NotifyPropertyChanging("Tempo");
+                        base.Tempo = value;
+                        NotifyPropertyChanged("Tempo");
                     }
                 }
             }
@@ -168,7 +159,7 @@ namespace BeatMachine.Model
 
         private EntityRef<AnalyzedSong.Summary> audioSummary;
 
-        [Association(Storage = "audioSummary", ThisKey = "SongId", OtherKey =
+        [Association(Storage = "audioSummary", ThisKey = "AnalyzedSongId", OtherKey =
             "SummaryId")]
         public new AnalyzedSong.Summary AudioSummary
         {

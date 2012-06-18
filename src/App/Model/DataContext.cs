@@ -14,16 +14,16 @@ namespace BeatMachine.Model
 {
     public class BeatMachineDataContext : DataContext
     {
-        // Specify the connection string as a static, used in main page and app.xaml.
         public static string DBConnectionString = "Data Source=isostore:/BM.sdf";
 
-        // Pass the connection string to the base class.
         public BeatMachineDataContext(string connectionString)
             : base(connectionString)
         { }
 
-        // Specify a single table for the to-do items.
         public Table<AnalyzedSong> AnalyzedSongs;
+
+        public Table<AnalyzedSong.Summary> Summary;
+
 
     }
 }

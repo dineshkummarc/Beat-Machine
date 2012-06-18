@@ -67,8 +67,8 @@ namespace BeatMachine
             {
                 if (db.DatabaseExists() == false)
                 {
-                    //Create the database
                     db.CreateDatabase();
+                    
                 }
             }
 
@@ -101,7 +101,7 @@ namespace BeatMachine
                 new WaitCallback(BeatMachine.Model.DataModel.GetAnalyzedSongs),
                 ExecutionQueue.Policy.Immediate);
             ExecutionQueue.Enqueue(
-                new WaitCallback(BeatMachine.Model.DataModel.GetAnalyzedSongs),
+                new WaitCallback(BeatMachine.Model.DataModel.GetSongsOnDevice),
                 ExecutionQueue.Policy.Immediate);
             ExecutionQueue.Enqueue(
                 new WaitCallback(BeatMachine.Model.DataModel.LoadCatalogId),
@@ -114,20 +114,58 @@ namespace BeatMachine
                     {
                         catalogIdReady = true;
                     }
-                    else if (String.Equals(pE.PropertyName, "SongsOnDevice") &&
-                        Model.SongsOnDevice.Count > 0)
+                    else if (String.Equals(pE.PropertyName, "SongsOnDeviceLoaded"))
                     {
                         songsOnDeviceReady = true;
                     }
-                    else if (String.Equals(pE.PropertyName, "AnalyzedSongs") &&
-                        Model.AnalyzedSongs.Count > 0)
+                    else if (String.Equals(pE.PropertyName, "AnalyzedSongsLoaded"))
                     {
                         analyzedSongsReady = true;
                     }
-
                     if (catalogIdReady && songsOnDeviceReady && analyzedSongsReady)
                     {
-                        // Unicorns!
+                        ExecutionQueue.Enqueue(
+                            new WaitCallback(BeatMachine.Model.DataModel.DiffSongs),
+                            ExecutionQueue.Policy.Immediate);
+
+                        // Make sure we only run this once
+                        catalogIdReady = false;
+                        songsOnDeviceReady = false;
+                        analyzedSongsReady = false;
+                    }
+                });
+            Model.PropertyChanged += new PropertyChangedEventHandler(
+                (pSender, pE) =>
+                {
+                    if (String.Equals(pE.PropertyName, "SongsToAnalyzeLoaded"))
+                    {
+                        if ((pSender as DataModel).SongsToAnalyzeLoaded)
+                        {
+                            ExecutionQueue.Enqueue(
+                                new WaitCallback(
+                                    BeatMachine.Model.DataModel.AnalyzeSongs),
+                                ExecutionQueue.Policy.Immediate);
+                        }
+                    }
+                    else if (String.Equals(pE.PropertyName, "SongsToAnalyzeBatchUploadReady"))
+                    {
+                        if ((pSender as DataModel).SongsToAnalyzeBatchUploadReady)
+                        {
+                            ExecutionQueue.Enqueue(
+                                new WaitCallback(
+                                    BeatMachine.Model.DataModel.DownloadAnalyzedSongs),
+                                ExecutionQueue.Policy.Queued);
+                        }
+                    }
+                    else if (String.Equals(pE.PropertyName, "SongsToAnalyzeBatchDownloadReady"))
+                    {
+                        if ((pSender as DataModel).SongsToAnalyzeBatchDownloadReady)
+                        {
+                            ExecutionQueue.Enqueue(
+                                new WaitCallback(
+                                    BeatMachine.Model.DataModel.AnalyzeSongs),
+                                ExecutionQueue.Policy.Queued);
+                        }
                     }
                 });
         }

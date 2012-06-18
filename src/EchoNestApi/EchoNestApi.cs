@@ -236,6 +236,9 @@ namespace BeatMachine.EchoNest
             {
                 // If it is a GET, the parameters go in the query string
                 sb.Append(CreateQueryString(parameters));
+
+                // Add cache buster
+                sb.Append(String.Format("&{0}", DateTime.UtcNow.Ticks.ToString()));
                 h = new HttpHelper(sb.ToString());
 
                 // TODO Some networks exhibit excessive GET caching, and
@@ -331,7 +334,7 @@ namespace BeatMachine.EchoNest
                     h.OpenReadAsync(new Dictionary<string, object>
                     {
                         {"path", path},
-                        {"userState", state}
+                        {"userState", userState}
                     });        
                     return;
                 }
